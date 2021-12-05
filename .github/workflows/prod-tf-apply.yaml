@@ -1,0 +1,40 @@
+name: Prod TF Apply
+on:
+  release:
+      types:
+        - created
+
+jobs:
+  prod-tf-apply-job:
+    runs-on: ubuntu-latest
+    environment: staging_environment
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install npm packages
+        run: |
+          git config --global url."https://github.com/".insteadOf git@github.com:
+          git config --global url."https://".insteadOf git://
+          cd packages/backend/lambda/layers/dependency/nodejs
+          npm install --production
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Verify Terraform version
+        run: terraform --version
+
+      - name: Initialize Terraform
+        run: |
+          cd terraform/environments/prod
+          terraform init
+
+      - name: Apply Terraform
+        run: |
+          cd terraform/environments/prod
+          terraform apply -auto-approve

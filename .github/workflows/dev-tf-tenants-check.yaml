@@ -1,0 +1,49 @@
+name: Dev Tenants Check
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: [master]
+
+jobs:
+  dev-tf-tenants-check-job:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Read package.json
+        id: tenants
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./terraform/environments/dev/tenants.json
+      - name: Echo tenants.json
+        run: echo "${{ steps.tenants.outputs.content }}"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Invoke Tenant Lambda
+        id: invokeTenantManager
+        run: |
+        aws lambda invoke --function-name tenantManager  --payload ${{ steps.tenants.outputs.content }} response.json
+      - name: Invoke Tenant Manager Function Lambda
+        id: tenantManager
+        uses: gagoar/invoke-aws-lambda@master
+        with:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          REGION: us-east-1
+          FunctionName: tenantManager
+          InvocationType: RequestResponse
+          Payload: ${{ steps.tenants.outputs.content }}
+      - name: Echo response payload to file
+        run: echo "${{ fromJSON(steps.tenantManager.outputs.response).Payload }}"
