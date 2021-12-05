@@ -33,7 +33,7 @@ jobs:
       - name: Invoke Tenant Lambda
         id: invokeTenantManager
         run: |
-        aws lambda invoke --function-name tenantManager  --payload ${{ steps.tenants.outputs.content }}
+        aws lambda invoke --function-name=tenantManager  --payload=${{ steps.tenants.outputs.content }}
       - name: Echo response payload to file
         run: echo "${{ fromJSON(steps.invokeTenantManager.outputs.response).Payload }}"
       - name: Invoke Tenant Manager Function Lambda
