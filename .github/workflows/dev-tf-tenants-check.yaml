@@ -1,7 +1,6 @@
 name: Dev Tenants Check
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, edited]
+  push:
     branches: [master]
 
 jobs:
@@ -34,7 +33,9 @@ jobs:
       - name: Invoke Tenant Lambda
         id: invokeTenantManager
         run: |
-        aws lambda invoke --function-name tenantManager  --payload ${{ steps.tenants.outputs.content }} response.json
+        aws lambda invoke --function-name tenantManager  --payload ${{ steps.tenants.outputs.content }}
+      - name: Echo response payload to file
+        run: echo "${{ fromJSON(steps.invokeTenantManager.outputs.response).Payload }}"
       - name: Invoke Tenant Manager Function Lambda
         id: tenantManager
         uses: gagoar/invoke-aws-lambda@master
