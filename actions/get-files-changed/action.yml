@@ -1,0 +1,45 @@
+name: Get All Changed Files
+description: Github action to get all files changed in a pull request or push.
+author: D2L-Labs
+inputs:
+  token:
+    description: >
+      GitHub token for GitHub API requests.
+      Users shouldn't need to set this themselves.
+    required: true
+    default: ${{ github.token }}
+  format:
+    description: >
+      Format of the steps output context. Default is 'string'.
+      Can be 'json-array', 'json-matrix' (Can be parsed into a matrix with fromJson()), or 'string'.
+    required: true
+    default: json-array
+  delimiter:
+    description: >
+      Delimiter to separate filenames. Default is ' ' (space).
+      Specify only if format is string. Otherwise error will be thrown.
+      Can be any delimiter of your choice. 
+    required: false
+    default: ' '
+outputs:
+  all:
+    description: >
+      Array of all changed files.
+  added:
+    description: >
+      Array of added files.
+  modified:
+    description: >
+      Array of modified files.
+  removed:
+    description: >
+      Array of removed files.
+  renamed:
+    description: >
+      Array of renamed files.
+  deleted:
+    description: >
+      Array of deleted files.
+runs:
+  using: node14
+  main: dist/index.js
