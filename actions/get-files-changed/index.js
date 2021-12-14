@@ -16,10 +16,10 @@ const run = async () => {
       core.setFailed(`Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
     }
 
-    // Debug log the payload.
+    // Debug log the payload
     core.debug(`Payload keys: ${Object.keys(context.payload)}`);
 
-    // Get event name.
+    // Get event name
     const { eventName } = context;
 
     // Define the base and head commits to be extracted from the payload.
