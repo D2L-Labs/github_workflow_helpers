@@ -8434,83 +8434,37 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5438);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-
-
+const core = __nccwpck_require__(2186);
+const { getOctokit, context } = __nccwpck_require__(5438);
 
 const NEWLINE = '\r\n';
 
 const run = async () => {
   try {
     // Create GitHub client with the API token.
-    const client = new _actions_github__WEBPACK_IMPORTED_MODULE_1__.GitHub((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('token', { required: true }));
-    const format = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('format', { required: true }); // default string
+    const octokit = getOctokit(core.getInput('token', { required: true }));
+    const format = core.getInput('format', { required: true }); // default string
     // TODO sanitization of delimiter?
-    const delimiter = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('delimiter', { required: false }); // default ' '
+    const delimiter = core.getInput('delimiter', { required: false }); // default ' '
     const acceptedFormats = ['json-array', 'json-matrix', 'string'];
     // Ensure that the format parameter is set properly.
     if (!acceptedFormats.includes(format)) {
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(`Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
+      core.setFailed(`Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
     }
 
     // Debug log the payload.
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)(`Payload keys: ${Object.keys(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload)}`);
+    core.debug(`Payload keys: ${Object.keys(context.payload)}`);
 
     // Get event name.
-    const { eventName } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context;
+    const { eventName } = context;
 
     // Define the base and head commits to be extracted from the payload.
     let base;
@@ -8518,53 +8472,52 @@ const run = async () => {
 
     switch (eventName) {
       case 'pull_request':
-        base = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.base.sha;
-        head = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.pull_request.head.sha;
+        base = context.payload.pull_request?.base?.sha;
+        head = context.payload.pull_request?.head?.sha;
         break;
       case 'push':
-        base = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.before;
-        head = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.after;
+        base = context.payload.before;
+        head = context.payload.after;
         break;
       default:
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
-          `This action only supports pull requests and pushes, ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName} events are not supported.
+        core.setFailed(
+          `This action only supports pull requests and pushes, ${context.eventName} events are not supported.
           Please submit an issue on this action's GitHub repo if you believe this in correct.`,
         );
     }
 
     // Log the base and head commits
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Base commit: ${base}`);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Head commit: ${head}`);
+    core.info(`Base commit: ${base}`);
+    core.info(`Head commit: ${head}`);
 
     // Ensure that the base and head properties are set on the payload.
     if (!base || !head) {
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
-        `The base and head commits are missing from the payload for this ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName} event. 
+      core.setFailed(
+        `The base and head commits are missing from the payload for this ${context.eventName} event. 
         Please submit an issue on this action's GitHub repo.`,
       );
     }
 
-    // Use GitHub's compare two commits API.
-    // https://developer.github.com/v3/repos/commits/#compare-two-commits
-    const response = await client.repos.compareCommits({
+    // Use Github recommended oktokit to compare two commits API.
+    const response = await octokit.rest.repos.compareCommits({
       base,
       head,
-      owner: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner,
-      repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
+      owner: context.repo.owner,
+      repo: context.repo.repo,
     });
 
     // Ensure that the request was successful.
     if (response.status !== 200) {
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
-        `The GitHub API for comparing the base and head commits for this ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName} 
+      core.setFailed(
+        `The GitHub API for comparing the base and head commits for this ${context.eventName} 
         event returned ${response.status}, expected 200. Please submit an issue on this action's GitHub repo.`,
       );
     }
 
     // Ensure that the head commit is ahead of the base commit.
     if (response.data.status !== 'ahead') {
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
-        `The head commit for this ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName} event is not ahead of the base commit. 
+      core.setFailed(
+        `The head commit for this ${context.eventName} event is not ahead of the base commit. 
         Please submit an issue on this action's GitHub repo.`,
       );
     }
@@ -8581,7 +8534,7 @@ const run = async () => {
       // If we're using a space delimiter and any of the filenames have a space in them,
       // then fail the step.
       if (format === 'string' && delimiter === ' ' && filename.includes(' ')) {
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
+        core.setFailed(
           `One of your filenames includes a space. Consider using a different output format or 
           removing spaces from your filenames. Please submit an issue on this action's GitHub repo.`,
         );
@@ -8601,7 +8554,7 @@ const run = async () => {
           renamed.push(filename);
           break;
         default:
-          (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(
+          core.setFailed(
             `One of your files includes an unsupported file status '${file.status}', 
             expected 'added', 'modified', 'removed', or 'renamed'.`,
           );
@@ -8615,11 +8568,11 @@ const run = async () => {
     const renamedLog = renamed.join(NEWLINE);
 
     // Log the output values.
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`All: ${allLog}`);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Added: ${addedLog}`);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Modified: ${modifiedLog}`);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Removed: ${removedLog}`);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Renamed: ${renamedLog}`);
+    core.info(`All: ${allLog}`);
+    core.info(`Added: ${addedLog}`);
+    core.info(`Modified: ${modifiedLog}`);
+    core.info(`Removed: ${removedLog}`);
+    core.info(`Renamed: ${renamedLog}`);
 
     let allOuput; let addedOutput; let modifiedOutput; let removedOutput; let
       renamedOutput;
@@ -8658,17 +8611,17 @@ const run = async () => {
         renamedOutput = renamed.join(delimiter);
         break;
       default:
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(`Unexpected Error. Should have been caught earlier. 
+        core.setFailed(`Unexpected Error. Should have been caught earlier. 
         Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
     }
     // Set step output context.
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)('all', allOuput);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)('added', addedOutput);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)('modified', modifiedOutput);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)('removed', removedOutput);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)('renamed', renamedOutput);
+    core.setOutput('all', allOuput);
+    core.setOutput('added', addedOutput);
+    core.setOutput('modified', modifiedOutput);
+    core.setOutput('removed', removedOutput);
+    core.setOutput('renamed', renamedOutput);
   } catch (error) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message);
+    core.setFailed(error.message);
   }
 };
 

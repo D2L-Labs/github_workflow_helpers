@@ -41,5 +41,5 @@ outputs:
     description: >
       Array of deleted files.
 runs:
-  using: node12
+  using: node16
   main: dist/index.js
