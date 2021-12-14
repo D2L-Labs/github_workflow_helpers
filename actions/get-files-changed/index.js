@@ -1,25 +1,24 @@
-const {
-  getInput, setFailed, debug, info, setOutput,
-} = require('@actions/core');
-const { context, GitHub } = require('@actions/github');
+const core = require('@actions/core');
+const github = require('@actions/github');
 
+const { context } = github;
 const NEWLINE = '\r\n';
 
 const run = async () => {
   try {
     // Create GitHub client with the API token.
-    const client = new GitHub(getInput('token', { required: true }));
-    const format = getInput('format', { required: true }); // default string
+    const octokit = github.getOctokit(core.getInput('token', { required: true }));
+    const format = core.getInput('format', { required: true }); // default string
     // TODO sanitization of delimiter?
-    const delimiter = getInput('delimiter', { required: false }); // default ' '
+    const delimiter = core.getInput('delimiter', { required: false }); // default ' '
     const acceptedFormats = ['json-array', 'json-matrix', 'string'];
     // Ensure that the format parameter is set properly.
     if (!acceptedFormats.includes(format)) {
-      setFailed(`Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
+      core.setFailed(`Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
     }
 
     // Debug log the payload.
-    debug(`Payload keys: ${Object.keys(context.payload)}`);
+    core.debug(`Payload keys: ${Object.keys(context.payload)}`);
 
     // Get event name.
     const { eventName } = context;
@@ -38,19 +37,19 @@ const run = async () => {
         head = context.payload.after;
         break;
       default:
-        setFailed(
+        core.setFailed(
           `This action only supports pull requests and pushes, ${context.eventName} events are not supported.
           Please submit an issue on this action's GitHub repo if you believe this in correct.`,
         );
     }
 
     // Log the base and head commits
-    info(`Base commit: ${base}`);
-    info(`Head commit: ${head}`);
+    core.info(`Base commit: ${base}`);
+    core.info(`Head commit: ${head}`);
 
     // Ensure that the base and head properties are set on the payload.
     if (!base || !head) {
-      setFailed(
+      core.setFailed(
         `The base and head commits are missing from the payload for this ${context.eventName} event. 
         Please submit an issue on this action's GitHub repo.`,
       );
@@ -58,7 +57,7 @@ const run = async () => {
 
     // Use GitHub's compare two commits API.
     // https://developer.github.com/v3/repos/commits/#compare-two-commits
-    const response = await client.repos.compareCommits({
+    const response = await octokit.repos.compareCommits({
       base,
       head,
       owner: context.repo.owner,
@@ -67,7 +66,7 @@ const run = async () => {
 
     // Ensure that the request was successful.
     if (response.status !== 200) {
-      setFailed(
+      core.setFailed(
         `The GitHub API for comparing the base and head commits for this ${context.eventName} 
         event returned ${response.status}, expected 200. Please submit an issue on this action's GitHub repo.`,
       );
@@ -75,7 +74,7 @@ const run = async () => {
 
     // Ensure that the head commit is ahead of the base commit.
     if (response.data.status !== 'ahead') {
-      setFailed(
+      core.setFailed(
         `The head commit for this ${context.eventName} event is not ahead of the base commit. 
         Please submit an issue on this action's GitHub repo.`,
       );
@@ -93,7 +92,7 @@ const run = async () => {
       // If we're using a space delimiter and any of the filenames have a space in them,
       // then fail the step.
       if (format === 'string' && delimiter === ' ' && filename.includes(' ')) {
-        setFailed(
+        core.setFailed(
           `One of your filenames includes a space. Consider using a different output format or 
           removing spaces from your filenames. Please submit an issue on this action's GitHub repo.`,
         );
@@ -113,7 +112,7 @@ const run = async () => {
           renamed.push(filename);
           break;
         default:
-          setFailed(
+          core.setFailed(
             `One of your files includes an unsupported file status '${file.status}', 
             expected 'added', 'modified', 'removed', or 'renamed'.`,
           );
@@ -127,11 +126,11 @@ const run = async () => {
     const renamedLog = renamed.join(NEWLINE);
 
     // Log the output values.
-    info(`All: ${allLog}`);
-    info(`Added: ${addedLog}`);
-    info(`Modified: ${modifiedLog}`);
-    info(`Removed: ${removedLog}`);
-    info(`Renamed: ${renamedLog}`);
+    core.info(`All: ${allLog}`);
+    core.info(`Added: ${addedLog}`);
+    core.info(`Modified: ${modifiedLog}`);
+    core.info(`Removed: ${removedLog}`);
+    core.info(`Renamed: ${renamedLog}`);
 
     let allOuput; let addedOutput; let modifiedOutput; let removedOutput; let
       renamedOutput;
@@ -170,17 +169,17 @@ const run = async () => {
         renamedOutput = renamed.join(delimiter);
         break;
       default:
-        setFailed(`Unexpected Error. Should have been caught earlier. 
+        core.setFailed(`Unexpected Error. Should have been caught earlier. 
         Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
     }
     // Set step output context.
-    setOutput('all', allOuput);
-    setOutput('added', addedOutput);
-    setOutput('modified', modifiedOutput);
-    setOutput('removed', removedOutput);
-    setOutput('renamed', renamedOutput);
+    core.setOutput('all', allOuput);
+    core.setOutput('added', addedOutput);
+    core.setOutput('modified', modifiedOutput);
+    core.setOutput('removed', removedOutput);
+    core.setOutput('renamed', renamedOutput);
   } catch (error) {
-    setFailed(error.message);
+    core.setFailed(error.message);
   }
 };
 
