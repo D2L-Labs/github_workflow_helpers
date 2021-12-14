@@ -11,7 +11,7 @@ const run = async () => {
     // TODO sanitization of delimiter?
     const delimiter = core.getInput('delimiter', { required: false }); // default ' '
     const acceptedFormats = ['json-array', 'json-matrix', 'string'];
-    // Ensure that the format parameter is set properly.
+    // Ensure that the format parameter is correct
     if (!acceptedFormats.includes(format)) {
       core.setFailed(`Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
     }
