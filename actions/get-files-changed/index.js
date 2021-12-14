@@ -1,7 +1,7 @@
-import {
+const {
   getInput, setFailed, debug, info, setOutput,
-} from '@actions/core';
-import { context, GitHub } from '@actions/github';
+} = require('@actions/core');
+const { context, GitHub } = require('@actions/github');
 
 const NEWLINE = '\r\n';
 
