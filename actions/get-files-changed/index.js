@@ -1,13 +1,12 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
+const { getOctokit, context } = require('@actions/github');
 
-const { context } = github;
 const NEWLINE = '\r\n';
 
 const run = async () => {
   try {
     // Create GitHub client with the API token.
-    const octokit = github.getOctokit(core.getInput('token', { required: true }));
+    const octokit = getOctokit(core.getInput('token', { required: true }));
     const format = core.getInput('format', { required: true }); // default string
     // TODO sanitization of delimiter?
     const delimiter = core.getInput('delimiter', { required: false }); // default ' '
