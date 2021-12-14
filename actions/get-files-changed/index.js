@@ -55,9 +55,8 @@ const run = async () => {
       );
     }
 
-    // Use GitHub's compare two commits API.
-    // https://developer.github.com/v3/repos/commits/#compare-two-commits
-    const response = await octokit.repos.compareCommits({
+    // Use Github recommended oktokit to compare two commits API.
+    const response = await octokit.rest.repos.compareCommits({
       base,
       head,
       owner: context.repo.owner,
