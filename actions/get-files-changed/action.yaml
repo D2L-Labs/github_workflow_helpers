@@ -18,9 +18,9 @@ inputs:
     description: >
       Delimiter to separate filenames. Default is ' ' (space).
       Specify only if format is string. Otherwise error will be thrown.
-      Can be any delimiter of your choice. 
+      Can be any delimiter of your choice.
     required: false
-    default: ' '
+    default: " "
 outputs:
   all:
     description: >
@@ -41,5 +41,5 @@ outputs:
     description: >
       Array of deleted files.
 runs:
-  using: node14
+  using: node16
   main: dist/index.js
