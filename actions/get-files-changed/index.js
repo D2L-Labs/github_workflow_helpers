@@ -5,7 +5,7 @@ const NEWLINE = '\r\n';
 
 const run = async () => {
   try {
-    // Create GitHub client with the API token.
+    // Create GitHub client with the API token
     const octokit = getOctokit(core.getInput('token', { required: true }));
     const format = core.getInput('format', { required: true }); // default string
     // TODO sanitization of delimiter?
@@ -22,7 +22,7 @@ const run = async () => {
     // Get event name
     const { eventName } = context;
 
-    // Define the base and head commits to be extracted from the payload.
+    // Define the base and head commits to be extracted from the payload
     let base;
     let head;
 
@@ -46,7 +46,7 @@ const run = async () => {
     core.info(`Base commit: ${base}`);
     core.info(`Head commit: ${head}`);
 
-    // Ensure that the base and head properties are set on the payload.
+    // Ensure that the base and head properties are set on the payload
     if (!base || !head) {
       core.setFailed(
         `The base and head commits are missing from the payload for this ${context.eventName} event. 
@@ -54,7 +54,7 @@ const run = async () => {
       );
     }
 
-    // Use Github recommended oktokit to compare two commits API.
+    // Use Github recommended oktokit to compare two commits API
     const response = await octokit.rest.repos.compareCommits({
       base,
       head,
@@ -62,7 +62,7 @@ const run = async () => {
       repo: context.repo.repo,
     });
 
-    // Ensure that the request was successful.
+    // Ensure that the request was successful
     if (response.status !== 200) {
       core.setFailed(
         `The GitHub API for comparing the base and head commits for this ${context.eventName} 
@@ -70,7 +70,7 @@ const run = async () => {
       );
     }
 
-    // Get the changed files from the response payload.
+    // Get the changed files from the response payload
     const { files } = response.data;
     const all = [];
     const added = [];
@@ -79,8 +79,7 @@ const run = async () => {
     const renamed = [];
     files.forEach((file) => {
       const { filename } = file;
-      // If we're using a space delimiter and any of the filenames have a space in them,
-      // then fail the step.
+      // If we're using a space delimiter and any of the filenames have a space in them then fail the step
       if (format === 'string' && delimiter === ' ' && filename.includes(' ')) {
         core.setFailed(
           `One of your filenames includes a space. Consider using a different output format or 
@@ -115,7 +114,7 @@ const run = async () => {
     const removedLog = removed.join(NEWLINE);
     const renamedLog = renamed.join(NEWLINE);
 
-    // Log the output values.
+    // Log the output values
     core.info(`All: ${allLog}`);
     core.info(`Added: ${addedLog}`);
     core.info(`Modified: ${modifiedLog}`);
@@ -151,7 +150,7 @@ const run = async () => {
         };
         break;
       case 'string':
-        // Format the arrays of changed files.
+        // Format the arrays of changed files
         allOuput = all.join(delimiter);
         addedOutput = added.join(delimiter);
         modifiedOutput = modified.join(delimiter);
@@ -162,7 +161,7 @@ const run = async () => {
         core.setFailed(`Unexpected Error. Should have been caught earlier. 
         Format must be one of 'json-array', 'json-matrix', or 'string' got '${format}'.`);
     }
-    // Set step output context.
+    // Set step output context
     core.setOutput('all', allOuput);
     core.setOutput('added', addedOutput);
     core.setOutput('modified', modifiedOutput);
