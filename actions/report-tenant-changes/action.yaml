@@ -1,0 +1,29 @@
+name: 'Report and validate tenant.json files changes.'
+description: 'Greet someone and record the time'
+inputs:
+  file-location:  # id of input
+    description: 'Location of the tenant file.'
+    required: true
+outputs:
+  lambda-invocation-statuscode:
+    description: 'Status code.'
+  tenants-changes:
+    description: 'tenants-changes.'
+  failed-syntax-domain-check:
+    description: 'Failed domain or syntax check.'
+  newTenantNum:
+    description: 'Number of new tenants added.'
+  inactiveTenantNum:
+    description: 'Number of tenants changed to inactive.'
+  changedTenantsNum:
+    description: 'Number of changed tenants.'
+  newTenantsInfo:
+    description: 'New tenants.'
+  inactiveTenantsInfo:
+    description: 'Inactive tenants.'
+  changedTenantsInfo:
+    description: 'Changed tenants info.'
+
+runs:
+  using: 'node16'
+  main: 'index.js'
