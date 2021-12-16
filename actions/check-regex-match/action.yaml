@@ -1,0 +1,19 @@
+name: Check Regex Match
+description: Github action to get all files changed in a pull request or push.
+author: D2L-Labs
+inputs:
+  input:
+    description: >
+      Json array or matrix of string inputs to test against regular expression(s)
+    required: true
+  regex:
+    description: >
+      Regular expression to test for in the input
+    required: true
+outputs:
+  match:
+    description: >
+      String boolean ('true', 'false') whether the regular expression matches a value in the inputs
+runs:
+  using: node16
+  main: dist/index.js
