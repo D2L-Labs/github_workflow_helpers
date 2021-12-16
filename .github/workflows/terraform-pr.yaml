@@ -8,7 +8,7 @@ on:
         required: true
       AWS_REGION:
         required: true
-      github_token:
+      TOKEN:
         required: true
 jobs:
   terraform-format-validate-plan:
@@ -54,7 +54,7 @@ jobs:
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
-          github-token: ${{ secrets.github_token }}
+          github-token: ${{ secrets.TOKEN }}
           script: |
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
