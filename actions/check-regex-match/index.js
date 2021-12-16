@@ -20,7 +20,7 @@ const run = async () => {
       core.setFailed('Array contains non-string value');
     }
 
-    const match = values.find((value) => regex.test(value));
+    const match = values.find((value) => value.match(regex));
 
     // Set step output context
     core.setOutput('match', match);
