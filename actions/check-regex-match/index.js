@@ -14,6 +14,13 @@ const run = async () => {
       core.setFailed('Array contains non-string value');
     }
 
+    try {
+      // eslint-disable-next-line no-new
+      new RegExp(regex);
+    } catch (e) {
+      core.setFailed(`${regex} is not a valid regular expression`);
+    }
+
     const match = values.find((value) => value.match(regex));
 
     // Set step output context
