@@ -26,26 +26,29 @@ try {
   };
 
   lambda.invoke(invokeParams, (data) => {
-    const { StatusCode } = JSON.parse(data.Payload);
-    core.setOutput('lambda-invocation-statuscode', StatusCode);
-    const result = JSON.parse(data.Payload).body;
-    const parsedResult = JSON.parse(result);
+    const { statusCode, body } = JSON.parse(data.Payload);
+    if (statusCode !== 200) {
+      throw new Error(`Lambda invocation failed: ${body}.`);
+    }
+    const parsedResult = JSON.parse(body);
     const fieldsCheck = parsedResult.requiredFieldsCheck;
     const syntaxCheck = parsedResult.fieldsSyntaxCheck;
     const passedCheck = fieldsCheck && syntaxCheck;
-    core.setOutput('failed-syntax-domain-check', passedCheck);
+    if (!passedCheck) {
+      throw new Error('Failed domain syntax and required fields check.');
+    }
     const newTenantNum = parsedResult.newTenantsInfo.newTenantsNums;
     const inactiveTenantNum = parsedResult.inactiveTenantsInfo.inactiveTenantsNums;
     const changedTenantsNum = parsedResult.changedTenantsInfo.changedTenantsNums;
     const newTenantsInfo = parsedResult.newTenantsInfo.newTenants;
     const inactiveTenantsInfo = parsedResult.inactiveTenantsInfo.inactiveTenants;
     const changedTenantsInfo = parsedResult.changedTenantsInfo.changedTenants;
-    core.setOutput('newTenantNum', newTenantNum);
-    core.setOutput('inactiveTenantNum', inactiveTenantNum);
-    core.setOutput('changedTenantsNum', changedTenantsNum);
-    core.setOutput('newTenantsInfo', newTenantsInfo);
-    core.setOutput('inactiveTenantsInfo', inactiveTenantsInfo);
-    core.setOutput('changedTenantsInfo', changedTenantsInfo);
+    console.log(`Number of new tenants added: ${newTenantNum}`);
+    console.log(`Number of tenants made inactive: ${inactiveTenantNum}`);
+    console.log(`Number of tenants changed: ${changedTenantsNum}`);
+    console.log(`New tenants information: ${newTenantsInfo}`);
+    console.log(`Inactive tenants information: ${inactiveTenantsInfo}`);
+    console.log(`Changed tenants information: ${changedTenantsInfo}`);
   });
 } catch (error) {
   core.setFailed(error.message);
