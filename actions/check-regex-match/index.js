@@ -1,5 +1,6 @@
+import escapeStringRegexp from 'escape-string-regexp';
+
 const core = require('@actions/core');
-const escapeStringRegexp = require('escape-string-regexp');
 
 const run = async () => {
   try {
