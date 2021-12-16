@@ -1,5 +1,3 @@
-import escapeStringRegexp from 'escape-string-regexp';
-
 const core = require('@actions/core');
 
 const run = async () => {
@@ -11,13 +9,8 @@ const run = async () => {
     let regex;
 
     try {
-      // javascript has no in built solution for escaping special characters for regex
-      // this package is used by 11million repos and has 60 million weekly downloads
-      // https://www.npmjs.com/package/escape-string-regexp
-      // note minimal amount of escaping is done issue: https://github.com/sindresorhus/escape-string-regexp/issues/30
-      const escapedRegex = escapeStringRegexp(rawRegex);
-      regex = new RegExp(escapedRegex);
-      core.info(`Escaped regex: ${escapedRegex}`);
+      // not sure if I need to escape anything here
+      regex = new RegExp(rawRegex);
     } catch (e) {
       core.setFailed(e.message);
     }

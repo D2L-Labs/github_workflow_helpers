@@ -1668,45 +1668,14 @@ module.exports = require("util");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
-// ESM COMPAT FLAG
-__nccwpck_require__.r(__webpack_exports__);
-
-;// CONCATENATED MODULE: ./node_modules/escape-string-regexp/index.js
-function escapeStringRegexp(string) {
-	if (typeof string !== 'string') {
-		throw new TypeError('Expected a string');
-	}
-
-	// Escape characters with special meaning either inside or outside character sets.
-	// Use a simple backslash escape when it’s always valid, and a `\xnn` escape when the simpler form would be disallowed by Unicode patterns’ stricter grammar.
-	return string
-		.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-		.replace(/-/g, '\\x2d');
-}
-
-;// CONCATENATED MODULE: ./index.js
-
-
 const core = __nccwpck_require__(186);
 
 const run = async () => {
@@ -1718,13 +1687,8 @@ const run = async () => {
     let regex;
 
     try {
-      // javascript has no in built solution for escaping special characters for regex
-      // this package is used by 11million repos and has 60 million weekly downloads
-      // https://www.npmjs.com/package/escape-string-regexp
-      // note minimal amount of escaping is done issue: https://github.com/sindresorhus/escape-string-regexp/issues/30
-      const escapedRegex = escapeStringRegexp(rawRegex);
-      regex = new RegExp(escapedRegex);
-      core.info(`Escaped regex: ${escapedRegex}`);
+      // not sure if I need to escape anything here
+      regex = new RegExp(rawRegex);
     } catch (e) {
       core.setFailed(e.message);
     }
