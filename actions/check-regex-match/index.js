@@ -13,6 +13,7 @@ const run = async () => {
       // javascript has no in built solution for escaping special characters for regex
       // this package is used by 11million repos and has 60 million weekly downloads
       // https://www.npmjs.com/package/escape-string-regexp
+      // note minimal amount of escaping is done issue: https://github.com/sindresorhus/escape-string-regexp/issues/30
       regex = escapeStringRegexp(rawRegex);
     } catch (e) {
       core.setFailed(e.message);
