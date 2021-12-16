@@ -9,12 +9,6 @@ const run = async () => {
 
     const values = JSON.parse(input);
 
-    // Debug log the payload
-    core.debug(`Inputs: ${{
-      input,
-      regex,
-    }}`);
-
     // check input type
     if (values.some((e) => typeof e !== 'string')) {
       core.setFailed('Array contains non-string value');
