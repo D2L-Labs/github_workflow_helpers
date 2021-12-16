@@ -1741,8 +1741,12 @@ const run = async () => {
       core.setFailed(`Invalid regular expression ${regex}. ${e.message}`);
     }
 
-    const match = values.find((value) => value.match(regex));
-
+    const match = values.some((value) => value.match(regex));
+    if (match) {
+      core.info(`Match found for ${rawRegex}`);
+    } else {
+      core.info(`No match found for ${rawRegex}`);
+    }
     // Set step output context
     core.setOutput('match', match);
   } catch (error) {
