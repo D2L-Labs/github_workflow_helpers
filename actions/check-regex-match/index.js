@@ -34,6 +34,7 @@ const run = async () => {
       core.setFailed(`Invalid regular expression ${regex}. ${e.message}`);
     }
 
+    core.info(`${values}, ${regex}`);
     const match = values.some((value) => value.match(regex));
     if (match) {
       core.info(`Match found for ${rawRegex}`);
