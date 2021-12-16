@@ -43,12 +43,18 @@ try {
     const newTenantsInfo = parsedResult.newTenantsInfo.newTenants;
     const inactiveTenantsInfo = parsedResult.inactiveTenantsInfo.inactiveTenants;
     const changedTenantsInfo = parsedResult.changedTenantsInfo.changedTenants;
-    console.log(`Number of new tenants added: ${newTenantNum}`);
-    console.log(`Number of tenants made inactive: ${inactiveTenantNum}`);
-    console.log(`Number of tenants changed: ${changedTenantsNum}`);
-    console.log(`New tenants information: ${newTenantsInfo}`);
-    console.log(`Inactive tenants information: ${inactiveTenantsInfo}`);
-    console.log(`Changed tenants information: ${changedTenantsInfo}`);
+    core.info(`Number of new tenants added: ${newTenantNum}`);
+    core.info(`Number of tenants made inactive: ${inactiveTenantNum}`);
+    core.info(`Number of tenants changed: ${changedTenantsNum}`);
+    core.info(`New tenants information: ${newTenantsInfo}`);
+    core.info(`Inactive tenants information: ${inactiveTenantsInfo}`);
+    core.info(`Changed tenants information: ${changedTenantsInfo}`);
+    core.setOutput('newTenantNum', newTenantNum);
+    core.setOutput('inactiveTenantNum', inactiveTenantNum);
+    core.setOutput('changedTenantsNum', changedTenantsNum);
+    core.setOutput('newTenantsInfo', newTenantsInfo);
+    core.setOutput('inactiveTenantsInfo', inactiveTenantsInfo);
+    core.setOutput('changedTenantsInfo', changedTenantsInfo);
   });
 } catch (error) {
   core.setFailed(error.message);
