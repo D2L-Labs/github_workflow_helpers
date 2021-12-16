@@ -28,14 +28,14 @@ try {
   lambda.invoke(invokeParams, (data) => {
     const { statusCode, body } = JSON.parse(data.Payload);
     if (statusCode !== 200) {
-      throw new Error(`Lambda invocation failed: ${body}.`);
+      core.setFailed(`Lambda invocation failed: ${body}.`);
     }
     const parsedResult = JSON.parse(body);
     const fieldsCheck = parsedResult.requiredFieldsCheck;
     const syntaxCheck = parsedResult.fieldsSyntaxCheck;
     const passedCheck = fieldsCheck && syntaxCheck;
     if (!passedCheck) {
-      throw new Error('Failed domain syntax and required fields check.');
+      core.setFailed('Failed domain syntax and required fields check.');
     }
     const newTenantNum = parsedResult.newTenantsInfo.newTenantsNums;
     const inactiveTenantNum = parsedResult.inactiveTenantsInfo.inactiveTenantsNums;
