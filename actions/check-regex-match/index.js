@@ -15,7 +15,9 @@ const run = async () => {
       // this package is used by 11million repos and has 60 million weekly downloads
       // https://www.npmjs.com/package/escape-string-regexp
       // note minimal amount of escaping is done issue: https://github.com/sindresorhus/escape-string-regexp/issues/30
-      regex = escapeStringRegexp(rawRegex);
+      const escapedRegex = escapeStringRegexp(rawRegex);
+      regex = new RegExp(escapedRegex);
+      core.info(`Escaped regex: ${escapedRegex}`);
     } catch (e) {
       core.setFailed(e.message);
     }
@@ -27,14 +29,7 @@ const run = async () => {
       core.setFailed('Array contains non-string value');
     }
 
-    try {
-      // eslint-disable-next-line no-new
-      new RegExp(regex);
-    } catch (e) {
-      core.setFailed(`Invalid regular expression ${regex}. ${e.message}`);
-    }
-    core.info(`Escaped regex: ${regex}`);
-    const match = values.some((value) => value.match(regex));
+    const match = values.some((value) => regex.test(value));
     if (match) {
       core.info(`Match found for ${rawRegex}`);
     } else {
