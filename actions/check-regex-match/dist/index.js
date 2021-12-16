@@ -1633,6 +1633,29 @@ module.exports = require("tls");
 "use strict";
 module.exports = require("util");
 
+/***/ }),
+
+/***/ 378:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ escapeStringRegexp)
+/* harmony export */ });
+function escapeStringRegexp(string) {
+	if (typeof string !== 'string') {
+		throw new TypeError('Expected a string');
+	}
+
+	// Escape characters with special meaning either inside or outside character sets.
+	// Use a simple backslash escape when it’s always valid, and a `\xnn` escape when the simpler form would be disallowed by Unicode patterns’ stricter grammar.
+	return string
+		.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+		.replace(/-/g, '\\x2d');
+}
+
+
 /***/ })
 
 /******/ 	});
@@ -1668,6 +1691,34 @@ module.exports = require("util");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
@@ -1677,13 +1728,24 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(186);
+const escapeStringRegexp = __nccwpck_require__(378);
 
 const run = async () => {
   try {
     // Create GitHub client with the API token
     const input = core.getInput('input', { required: true });
     // TODO sanitization of delimiter?
-    const regex = core.getInput('regex', { required: true });
+    const rawRegex = core.getInput('regex', { required: true });
+    let regex;
+
+    try {
+      // javascript has no in built solution for escaping special characters for regex
+      // this package is used by 11million repos and has 60 million weekly downloads
+      // https://www.npmjs.com/package/escape-string-regexp
+      regex = escapeStringRegexp(rawRegex);
+    } catch (e) {
+      core.setFailed(e.message);
+    }
 
     const values = JSON.parse(input);
 
@@ -1696,7 +1758,7 @@ const run = async () => {
       // eslint-disable-next-line no-new
       new RegExp(regex);
     } catch (e) {
-      core.setFailed(`${regex} is not a valid regular expression`);
+      core.setFailed(`Invalid regular expression ${regex}. ${e.message}`);
     }
 
     const match = values.find((value) => value.match(regex));

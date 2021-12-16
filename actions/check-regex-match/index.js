@@ -1,11 +1,22 @@
 const core = require('@actions/core');
+const escapeStringRegexp = require('escape-string-regexp');
 
 const run = async () => {
   try {
     // Create GitHub client with the API token
     const input = core.getInput('input', { required: true });
     // TODO sanitization of delimiter?
-    const regex = core.getInput('regex', { required: true });
+    const rawRegex = core.getInput('regex', { required: true });
+    let regex;
+
+    try {
+      // javascript has no in built solution for escaping special characters for regex
+      // this package is used by 11million repos and has 60 million weekly downloads
+      // https://www.npmjs.com/package/escape-string-regexp
+      regex = escapeStringRegexp(rawRegex);
+    } catch (e) {
+      core.setFailed(e.message);
+    }
 
     const values = JSON.parse(input);
 
@@ -18,7 +29,7 @@ const run = async () => {
       // eslint-disable-next-line no-new
       new RegExp(regex);
     } catch (e) {
-      core.setFailed(`${regex} is not a valid regular expression`);
+      core.setFailed(`Invalid regular expression ${regex}. ${e.message}`);
     }
 
     const match = values.find((value) => value.match(regex));
