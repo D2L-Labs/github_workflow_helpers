@@ -1,6 +1,11 @@
 name: Terraform PR
 on:
   workflow_call:
+    inputs:
+      directory:
+        type: string
+        required: false
+        default: ./
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -29,24 +34,31 @@ jobs:
 
       - name: Terraform fmt
         id: fmt
+        shell: bash
         run: |
+          cd ${{inputs.directory}}
           terraform fmt -check
 
       - name: Initialize Terraform
         id: init
+        shell: bash
         run: |
+          cd ${{inputs.directory}}
           terraform init
 
       - name: Validate Terraform
         id: validate
+        shell: bash
         run: |
+          cd ${{inputs.directory}}
           terraform validate -no-color
 
       - name: Plan Terraform
         id: plan
+        shell: bash
         continue-on-error: true
         run: |
-          cd terraform/environments/dev
+          cd ${{inputs.directory}}
           terraform plan -no-color
 
       - name: Update Pull Request
@@ -71,4 +83,5 @@ jobs:
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
+        shell: bash
         run: exit 1
