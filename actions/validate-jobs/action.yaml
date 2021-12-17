@@ -9,7 +9,7 @@ inputs:
     description: >
       JSON array of Github support job outcomes 'success', 'skipped', 'failure'
       Format '['success', ...]'
-      Defaults to '["success", "skipped"]'
+      Defaults to '["success", "skipped"]' Note default can't be "['success', 'skipped']'
     default: '["success", "skipped"]'
     required: false
 runs:
