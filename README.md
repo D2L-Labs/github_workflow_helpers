@@ -1,1 +1,2 @@
 # workflows
+This repo is used to create reusable workflows that can help other repo's GitHub Actions workflow. You can uses these reusable workflows from another workflow in another repo. To get files changed, uses: D2L-Labs/github_workflow_helpers/actions/get-files-changed@main. To check for regex match, uses: D2L-Labs/github_workflow_helpers/actions/check-regex-match@main, and then pass in inputs and regex.
