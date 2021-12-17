@@ -1,0 +1,14 @@
+name: Validate all needs if success or skipped
+on:
+  workflow_call:
+    inputs:
+      needs:
+        type: string
+        required: false
+        default: ${{toJson(needs)}}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: echo ${{inputs.needs}}
