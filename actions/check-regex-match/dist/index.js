@@ -1678,7 +1678,7 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(186);
 
-const run = async () => {
+const run = () => {
   try {
     // Create GitHub client with the API token
     const input = core.getInput('input', { required: true });

@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 
-const run = async () => {
+const run = () => {
   try {
     // Create GitHub client with the API token
     const input = core.getInput('input', { required: true });
