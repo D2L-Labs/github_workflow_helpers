@@ -1,10 +1,10 @@
-const Lambda = require('aws-sdk/clients/lambda');
+const aws = require('aws-sdk');
 const fs = require('fs');
 const core = require('@actions/core');
 
 try {
   const fileLocation = core.getInput('file-location');
-  const lambda = new Lambda({
+  const lambda = new aws.lambda({
     apiVersion: '2015-03-31',
     endpoint: 'https://lambda.us-east-1.amazonaws.com',
     sslEnabled: false,
