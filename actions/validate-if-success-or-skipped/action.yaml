@@ -3,7 +3,7 @@ description: Github action to validate all jobs in needs field if success or ski
 author: D2L-Labs
 inputs:
   needs:
-    description: "JSON needs object '${{toJson(needs)}}'"
+    description: "JSON needs object toJson(needs)"
     required: true
 runs:
   using: node16
