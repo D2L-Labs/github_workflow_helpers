@@ -8448,6 +8448,7 @@ const { context } = __nccwpck_require__(5438);
 const run = () => {
   try {
     core.info(JSON.stringify(context));
+    core.info(JSON.stringify(core.getInput('jobs', { required: true })));
   } catch (error) {
     core.setFailed(error.message);
   }
