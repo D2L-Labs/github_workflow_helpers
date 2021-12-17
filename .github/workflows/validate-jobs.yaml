@@ -5,7 +5,7 @@ on:
       needs:
         type: string
         required: false
-        default: ${{toJson(needs)}}
+        default: ${{github.token}}
 jobs:
   validate:
     runs-on: ubuntu-latest
