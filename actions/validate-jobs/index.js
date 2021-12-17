@@ -1,12 +1,13 @@
 const core = require('@actions/core');
 
 const run = () => {
-  const acceptedResults = ['success', 'skipped'];
   try {
     const needs = JSON.parse(core.getInput('needs', { required: true }));
+    const accepted = JSON.parse(core.getInput('accepted'));
+
     const failedJobs = [];
-    needs.forEach((job) => {
-      if (!(acceptedResults.includes(needs[job].result))) {
+    Object.entries(needs).forEach(([job, value]) => {
+      if (!(accepted.includes(value.result))) {
         failedJobs.push(job);
       }
     });

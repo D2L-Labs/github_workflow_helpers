@@ -1,7 +1,7 @@
 {
-    "name": "validate-if-success-or-skipped",
+    "name": "validate-jobs",
     "version": "1.0.0",
-    "description": "Github action to validate all jobs in needs field if success or skipped",
+    "description": "Github action to validate all jobs in needs field based on input results",
     "repository": "https://github.com/D2L-Labs/github_workflow_helpers.git",
     "author": "D2L-Labs",
     "license": "MIT",

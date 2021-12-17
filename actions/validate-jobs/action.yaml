@@ -1,0 +1,17 @@
+name: Validate all jobs
+description: Github action to validate all jobs in needs field based on input results
+author: D2L-Labs
+inputs:
+  needs:
+    description: JSON needs object toJson(needs)
+    required: true
+  accepted:
+    description: >
+      JSON array of Github support job outcomes 'success', 'skipped', 'failure'
+      Format '['success', ...]'
+      Defaults to '['
+    default: "['success', 'skipped']"
+    required: false
+runs:
+  using: node16
+  main: dist/index.js
