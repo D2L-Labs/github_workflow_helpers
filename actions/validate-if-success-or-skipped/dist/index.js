@@ -1679,8 +1679,20 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(186);
 
 const run = () => {
+  const acceptedResults = ['success', 'skipped'];
   try {
-    core.info(core.getInput('needs'));
+    const needs = JSON.parse(core.getInput('needs', { required: true }));
+    const failedJobs = [];
+    needs.forEach((job) => {
+      if (!(acceptedResults.includes(needs[job].result))) {
+        failedJobs.push(job);
+      }
+    });
+    if (failedJobs.length > 0) {
+      core.setFailed(`Failed jobs: ${failedJobs}`);
+    } else {
+      core.info('All jobs validated!');
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
