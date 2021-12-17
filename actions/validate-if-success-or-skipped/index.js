@@ -4,7 +4,8 @@ const { context } = require('@actions/github');
 const run = () => {
   try {
     core.info(JSON.stringify(context));
-    core.info(JSON.stringify(core.getInput('jobs', { required: true })));
+    core.info(core.getInput('jobs'));
+    core.info(JSON.stringify(core.getInput('jobs')));
   } catch (error) {
     core.setFailed(error.message);
   }

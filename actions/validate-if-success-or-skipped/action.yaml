@@ -6,6 +6,7 @@ inputs:
     description: >
       Json array or matrix of string inputs to test against regular expression(s)
     required: false
+    default: ${{toJson(needs)}}
 runs:
   using: node16
   main: dist/index.js
