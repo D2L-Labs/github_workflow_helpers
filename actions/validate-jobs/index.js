@@ -3,7 +3,8 @@ const core = require('@actions/core');
 const run = () => {
   try {
     const needs = JSON.parse(core.getInput('needs', { required: true }));
-    const accepted = JSON.parse(core.getInput('accepted'));
+    // const accepted = JSON.parse(core.getInput('accepted'));
+    const accepted = ['success', 'skipped'];
 
     const failedJobs = [];
     Object.entries(needs).forEach(([job, value]) => {
