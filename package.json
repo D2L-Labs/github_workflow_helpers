@@ -1,0 +1,12 @@
+{
+  "name": "github_workflow_helpers",
+  "version": "1.0.0",
+  "description": "Github action to validate all jobs in needs field based on input results",
+  "repository": "https://github.com/D2L-Labs/github_workflow_helpers.git",
+  "author": "D2L-Labs",
+  "license": "SEE LICENSE IN LICENSE",
+  "private": "true",
+  "scripts": {
+      "build": "for d in ./actions/*/; do echo $d; cd $d; npm i; npm run build;  done;"
+  }
+}
