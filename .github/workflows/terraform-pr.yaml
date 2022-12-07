@@ -62,7 +62,7 @@ jobs:
           terraform plan -no-color
 
       - name: Update Pull Request
-        uses: actions/github-script@6.3.3
+        uses: actions/github-script@v6
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
