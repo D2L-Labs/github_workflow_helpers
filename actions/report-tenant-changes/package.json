@@ -4,7 +4,7 @@
     "description": "Github Action to report and validate changes on tenant.json files.",
     "repository": "https://github.com/D2L-Labs/github_workflow_helpers.git",
     "author": "D2L-Labs",
-    "license": "MIT",
+    "license": "SEE LICENSE IN LICENSE",
     "private": "true",
     "scripts": {
         "build": "ncc build index.js"
