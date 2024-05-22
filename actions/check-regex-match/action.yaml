@@ -15,5 +15,5 @@ outputs:
     description: >
       String boolean ('true', 'false') whether the regular expression matches a value in the inputs
 runs:
-  using: node16
+  using: node20
   main: dist/index.js
